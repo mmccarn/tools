@@ -9,7 +9,7 @@ setlocal enabledelayedexpansion
 for /f "tokens=2 delims=, usebackq eol=" %%v in (`wmic path win32_VideoController get name /format:csv ^|findstr /I "%computername%"`) do (
 	set VideoName=%%v
 	: The video name set above includes an ascii 13 (carriage return)
-	: "...:~0,-1..." below to removes the extra char
+	: "...:~0,-1..." below removes the extra char
 	wmic path Win32_PNPEntity where "Name='!VideoName:~0,-1!'" call disable
 	wmic path Win32_PNPEntity where "Name='!VideoName:~0,-1!'" call enable
 	)
