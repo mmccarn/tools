@@ -18,11 +18,13 @@
 # now you're all set...
 #
 # 64-bit
-SETUP=setup-x86_64.exe
+#SETUP=setup-x86_64.exe
 #
 # 32-bit
 #SETUP=setup-x86.exe
 #
+# Detect OS and set installer name
+SETUP=setup-$(uname -m |sed s/i686/x86/).exe
 # Where...
 SETUPHOME=~/.cygwin
 
