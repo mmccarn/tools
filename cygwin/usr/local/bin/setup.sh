@@ -34,7 +34,7 @@ wget -q -O $SETUP https://www.cygwin.com/$SETUP
 wget -q -O $SETUP.sig https://www.cygwin.com/$SETUP.sig
 #
 # verify sig; abort on any problem
-gpg2 --verify setup-x86_64.exe.sig setup-x86_64.exe 2>/dev/null || exit 1
+gpg2 --verify $SETUP.sig $SETUP 2>/dev/null || exit 1
 #
 # make setup executable and do a quiet upgrade
 chmod 755 $SETUP
