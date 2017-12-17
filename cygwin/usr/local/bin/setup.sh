@@ -12,7 +12,7 @@
 #   install wget, gnupg2
 # download cygwin public key from
 #   wget https://cygwin.com/key/pubring.asc
-# install cygin key
+# install cygwin key
 #   gpg2 --import pubring.asc
 #
 # now you're all set...
