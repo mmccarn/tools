@@ -4,7 +4,7 @@
 # - download the latest copy of setup from www.cygwin.com
 # - verify the file signature
 # - run the new setup with the supplied arguments
-# - Run a quiet upgrade of installed packages if not arguments are supplied
+# - Run a quiet upgrade of installed packages if no arguments are supplied
 #   ( -q -g)
 #
 # preparation
