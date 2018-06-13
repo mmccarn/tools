@@ -1,5 +1,10 @@
 #!/bin/bash
-WORK="~/wazuh"
+WORK="$HOME/wazuh"
+
+USER_NO_STOP=y
+USER_LANGUAGE=en
+USER_UPDATE=y
+
 VER=$(curl -s https://documentation.wazuh.com/current/installation-guide/installing-wazuh-agent/wazuh_agent_sources.html |grep 'curl -Ls' |head -1 |sed 's/.*\/archive\///' |sed 's/\.tar.*//')
 
 mkdir -p "$WORK"
