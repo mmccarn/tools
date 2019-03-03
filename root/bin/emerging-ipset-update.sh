@@ -11,25 +11,27 @@
 # * delets temporary ipsets
 #
 # Changelog:
+# 02 Mar 2019 / 1.0a m.mccarn@aicr.org update for Ubuntu 18.04 / new URLs
 # 08 Dec 2009 / 1.0 thomas@chaschperli.ch initial version
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
 
 IPSET_BLACKLIST_HOST=blacklist
 IPSET_BLACKLIST_NET=blacklistnet
 IPSET_RESTOREFILE=$(mktemp -t emerging-ipset-update-ipsetrestorefile.XXX)
 
 ET_FWREV_STATEFILE="/var/run/emerging-ipset-update.fwrev"
-ET_FWREV_URL="http://www.emergingthreats.net/fwrules/FWrev"
+ET_FWREV_URL="https://rules.emergingthreats.net/fwrules/FWrev"
 ET_FWREV_TEMP=$(mktemp -t emerging-ipset-update-fwrevtemp.XXX)
 ET_FWREV_LOCAL="0"
 ET_FWREV_ONLINE="0"
-ET_FWRULES="http://www.emergingthreats.net/fwrules/emerging-Block-IPs.txt"
+ET_FWRULES="https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt"
 ET_FWRULES_TEMP=$(mktemp -t emerging-ipset-update-fwrules.XXXX)
 
 SYSLOG_TAG="EMERGING-IPSET-UPDATE"
 
 WGET="/usr/bin/wget"
-IPSET="/usr/sbin/ipset"
+IPSET="/sbin/ipset"
 
 
 do_log () {
