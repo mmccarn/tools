@@ -1,62 +1,3 @@
-#!/bin/bash
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
-
-# silently recreate ipsets
-ipset -! create blacklist iphash --hashsize 26244
-ipset -! create blacklistnet nethash --hashsize 3456
-
-# delete top lines in INPUT containing match-set
-while iptables -L INPUT 1 |grep match-set >/dev/null 2>&1; 
-do 
-    iptables -D INPUT 1; 
-done
-
-# delete any other lines in INPUT containing match-set
-while iptables -L INPUT |grep match-set >/dev/null 2>&1;
-do
-    RULENO=$(iptables -L INPUT --line-numbers |grep match-set | cut -d" " -f1)
-    iptables -D INPUT $RULENO
-done
-
-# Insert the 4 lines we need at the top of the INPUT chain in reverse order
-iptables -I INPUT -m set --match-set blacklist src -j DROP
-iptables -I INPUT -m set --match-set blacklist src -j ufw-logging-deny
-iptables -I INPUT -m set --match-set blacklistnet src -j DROP
-iptables -I INPUT -m set --match-set blacklistnet src -j ufw-logging-deny
-
-# create fwrev version file
-touch "/var/run/emerging-ipset-update.fwrev"
-
-# get the latest blocklist
-/root/bin/emerging-ipset-update.sh
-root@cloud:~# 
-root@cloud:~# crontab -l
-# Edit this file to introduce tasks to be run by cron.
-# 
-# Each task to run has to be defined through a single line
-# indicating with different fields when the task will be run
-# and what command to run for the task
-# 
-# To define the time you can provide concrete values for
-# minute (m), hour (h), day of month (dom), month (mon),
-# and day of week (dow) or use '*' in these fields (for 'any').# 
-# Notice that tasks will be started based on the cron's system
-# daemon's notion of time and timezones.
-# 
-# Output of the crontab jobs (including errors) is sent through
-# email to the user the crontab file belongs to (unless redirected).
-# 
-# For example, you can run a backup of all your user accounts
-# at 5 a.m every week with:
-# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
-# 
-# For more information see the manual pages of crontab(5) and cron(8)
-# 
-# m h  dom mon dow   command
- 30 2   *   *   *    /usr/bin/certbot renew >> /var/log/le-renew.log
-  9 4   *   *   *    /root/bin/emerging-ipset-update.sh >/dev/null 2>&1
-@reboot              /root/bin/add-iptables-rules.sh >/dev/null 2>&1
-root@cloud:~# cat bin/emerging-ipset-update.txt 
 #!/bin/sh
 #
 # Update emerging fwrules ipset
@@ -70,25 +11,27 @@ root@cloud:~# cat bin/emerging-ipset-update.txt
 # * delets temporary ipsets
 #
 # Changelog:
+# 02 Mar 2019 / 1.0a m.mccarn@aicr.org update for Ubuntu 18.04 / new URLs
 # 08 Dec 2009 / 1.0 thomas@chaschperli.ch initial version
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
 
 IPSET_BLACKLIST_HOST=blacklist
 IPSET_BLACKLIST_NET=blacklistnet
 IPSET_RESTOREFILE=$(mktemp -t emerging-ipset-update-ipsetrestorefile.XXX)
 
 ET_FWREV_STATEFILE="/var/run/emerging-ipset-update.fwrev"
-ET_FWREV_URL="http://www.emergingthreats.net/fwrules/FWrev"
+ET_FWREV_URL="https://rules.emergingthreats.net/fwrules/FWrev"
 ET_FWREV_TEMP=$(mktemp -t emerging-ipset-update-fwrevtemp.XXX)
 ET_FWREV_LOCAL="0"
 ET_FWREV_ONLINE="0"
-ET_FWRULES="http://www.emergingthreats.net/fwrules/emerging-Block-IPs.txt"
+ET_FWRULES="https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt"
 ET_FWRULES_TEMP=$(mktemp -t emerging-ipset-update-fwrules.XXXX)
 
 SYSLOG_TAG="EMERGING-IPSET-UPDATE"
 
 WGET="/usr/bin/wget"
-IPSET="/usr/sbin/ipset"
+IPSET="/sbin/ipset"
 
 
 do_log () {
